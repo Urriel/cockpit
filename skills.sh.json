@@ -1,0 +1,10 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "groupings": [
+    {
+      "title": "Cockpit",
+      "description": "Aggregate your scattered sources into one ranked attention queue, rendered as a self-contained HTML dashboard.",
+      "skills": ["cockpit"]
+    }
+  ]
+}

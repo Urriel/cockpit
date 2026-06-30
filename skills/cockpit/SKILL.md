@@ -8,6 +8,10 @@ description: >
   queue" rendered as a self-contained HTML dashboard. Read-only — never sends,
   moves, or writes anything.
 allowed-tools: Bash Read Grep Glob
+license: MIT
+metadata:
+  author: Urriel
+  version: '1.0.0'
 ---
 
 # Cockpit — Personal Ops Brief

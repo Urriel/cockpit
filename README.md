@@ -15,13 +15,28 @@ is portable *data*, not bespoke HTML.
 
 ![Morning briefing](screenshots/morning-briefing.png)
 
-## Quick start
+## Install as a skill
+
+This repo is a [skills.sh](https://www.skills.sh) skill. Add it to your AI agent
+(Claude Code, Cursor, …) with:
+
+```bash
+npx skills add Urriel/cockpit
+```
+
+That installs the [`cockpit`](skills/cockpit/) skill — invoke it with `/cockpit`.
+It aggregates whatever sources you've wired (CLIs, MCP servers, local files),
+ranks them by **urgency**, **convergence** (an item hitting multiple surfaces at
+once is the real priority) and **stakes**, then renders the brief. It never
+sends, moves, or writes anything.
+
+## Quick start (standalone)
 
 No dependencies — just Python 3.
 
 ```bash
-python3 render.py gallery/morning-briefing.json
-open gallery/morning-briefing.html        # macOS  (xdg-open on Linux)
+python3 skills/cockpit/render.py skills/cockpit/gallery/morning-briefing.json
+open skills/cockpit/gallery/morning-briefing.html        # macOS (xdg-open on Linux)
 ```
 
 That inlines the spec into `template.html` and writes a single `.html` file you
@@ -58,8 +73,9 @@ Every card has a `type` and an optional `accent`
 `deltaKind ∈ up | down | warn | flat` (you choose the meaning — `up` is green,
 `down` red, `warn` amber). List urgency `tag.kind ∈ late | today | high | med | low`.
 
-The full schema lives in the comment block inside [`template.html`](template.html)
-and in [`SKILL.md`](SKILL.md).
+The full schema lives in the comment block inside
+[`skills/cockpit/template.html`](skills/cockpit/template.html) and in
+[`skills/cockpit/SKILL.md`](skills/cockpit/SKILL.md).
 
 ## Gallery
 
@@ -67,19 +83,22 @@ Ready-to-render sample cockpits — copy one and swap in your data:
 
 | Sample | Exercises |
 |---|---|
-| [`gallery/morning-briefing.json`](gallery/morning-briefing.json) | hero · metric · two lists · note · rail |
-| [`gallery/build-in-public.json`](gallery/build-in-public.json) | hero · metric · feed · list · **no rail (full-width)** |
+| [`morning-briefing.json`](skills/cockpit/gallery/morning-briefing.json) | hero · metric · two lists · note · rail |
+| [`build-in-public.json`](skills/cockpit/gallery/build-in-public.json) | hero · metric · feed · list · **no rail (full-width)** |
 
 ![Build in public](screenshots/build-in-public.png)
 
-## Use it as a Claude skill
+## Repo layout
 
-[`SKILL.md`](SKILL.md) is a read-only ops-brief skill. Drop this repo into your
-agent's skills directory (e.g. `~/.claude/skills/cockpit/`) and invoke
-`/cockpit`. The skill aggregates whatever sources you've wired (CLIs, MCP
-servers, local files), ranks them — urgency, **convergence** (an item hitting
-multiple surfaces at once is the real priority), stakes — and renders the brief.
-It never sends, moves, or writes anything.
+```
+skills/cockpit/        the installable skill
+  SKILL.md             read-only ops-brief instructions (rank by urgency/convergence/stakes)
+  template.html        frozen CSS + vanilla-JS renderer (data inlined for file:// + mobile)
+  render.py            zero-dependency spec → standalone HTML
+  gallery/             sample cockpits
+skills.sh.json         skills.sh manifest
+screenshots/           gallery renders (for this README)
+```
 
 ## How it works
 
