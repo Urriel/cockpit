@@ -3,6 +3,12 @@
 One ranked view of *what needs you right now* — pulled from all your scattered
 sources into a single, self-contained HTML dashboard.
 
+```bash
+npx skills add Urriel/cockpit
+```
+
+[**View on skills.sh →**](https://www.skills.sh/urriel/cockpit)
+
 You live across a dozen tools: mail, chat, calendar, tasks, git, billing,
 analytics. Gathering the state of your day from all of them is a daily tax. A
 **cockpit** does the aggregation for you and renders one ranked *attention
