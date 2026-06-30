@@ -1,0 +1,50 @@
+{
+  "date": "Tuesday, June 30 2026",
+  "time": "08:02",
+  "sources": "Stripe · PostHog · Linear · Discord · Google Calendar",
+  "footer": "Indie SaaS Morning Briefing — template gallery sample. Read-only, polling.",
+  "cards": [
+    {
+      "type": "hero", "accent": "red", "title": "🔥 The one thing", "badge": "launch",
+      "headline": "Ship the v2 announcement — <strong>0 users notified</strong> yet",
+      "sub": "v2 went live last night and nobody knows. Send the in-app banner + email before the EU morning peak (next ~2h). Draft is written; it just needs your send.",
+      "chips": ["#general post", "Email blast", "In-app banner"]
+    },
+    {
+      "type": "metric", "accent": "blue", "title": "📊 Overnight",
+      "items": [
+        { "label": "MRR", "value": "$4,820", "delta": "+$180", "deltaKind": "up" },
+        { "label": "New signups", "value": "23", "delta": "+9", "deltaKind": "up" },
+        { "label": "Trial → paid", "value": "3", "delta": "0", "deltaKind": "flat" },
+        { "label": "Churn", "value": "1", "delta": "+1", "deltaKind": "warn", "sub": "Pro plan" }
+      ]
+    },
+    {
+      "type": "list", "accent": "amber", "title": "⚡ Needs a reply",
+      "items": [
+        { "who": "Sofia (Acme)", "what": "Asking if the SSO bug is fixed in v2", "sub": "Blocking her rollout to 40 seats. It is fixed — confirm + share changelog.", "chips": ["Discord DM"], "tags": [{"label": "today", "kind": "today"}] },
+        { "who": "Marcus", "what": "Wants the annual-billing option before renewing", "sub": "$1,200/yr deal. Stripe link not set up yet.", "chips": ["Email"], "tags": [{"label": "high", "kind": "high"}] }
+      ]
+    },
+    {
+      "type": "list", "accent": "violet", "title": "🐛 Open P1 bugs",
+      "items": [
+        { "what": "Export to CSV times out over 10k rows", "sub": "3 reports this week. Likely the unpaginated query.", "chips": ["Linear · ENG-412"], "tags": [{"label": "overdue · 06/26", "kind": "late"}, {"label": "high", "kind": "high"}] },
+        { "what": "Webhook retries fire twice on 500", "sub": "Double-charges possible. Needs idempotency key.", "chips": ["Linear · ENG-419"], "tags": [{"label": "high", "kind": "high"}] }
+      ]
+    },
+    {
+      "type": "note", "accent": "gray", "collapsed": true,
+      "summary": "🔇 41 filtered — promos, receipts, CI noise",
+      "bodyHtml": "Vercel deploy ✓ ×6, GitHub Actions ✓ ×4, Stripe receipts ×3, 28 newsletters/promos. <strong>Worth a glance</strong>: AWS «cost anomaly» alert (us-east-1, +$12) — probably the load test.",
+      "footnote": "a 10s check: «New sign-in to GitHub from a new device» — likely your laptop, confirm it was you."
+    }
+  ],
+  "rail": [
+    "Approved 2 Stripe refunds",
+    "Merged the v2 release PR",
+    "Replied to 3 support threads",
+    "Posted launch teaser on X"
+  ],
+  "railTitle": "✅ Done today"
+}

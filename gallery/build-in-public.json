@@ -1,0 +1,40 @@
+{
+  "date": "Tuesday, June 30 2026",
+  "time": "18:40",
+  "sources": "GitHub · Linear · Stripe · PostHog · X",
+  "footer": "Build-in-Public Daily — template gallery sample. No rail (full-width). Read-only, polling.",
+  "cards": [
+    {
+      "type": "hero", "accent": "violet", "title": "📣 Today's share-worthy",
+      "headline": "Shipped MCP connectors in <strong>6 hours</strong> — cockpits now pull from any MCP source",
+      "sub": "The clip writes itself: before/after of wiring Stripe + Linear into one view by just describing it. Post the 40-second screen recording with the diff.",
+      "chips": ["Hook ready", "Screen recording", "Post tonight"]
+    },
+    {
+      "type": "metric", "accent": "green", "title": "📈 Today's numbers",
+      "items": [
+        { "label": "PRs merged", "value": "7", "delta": "+3", "deltaKind": "up", "sub": "vs yesterday" },
+        { "label": "Commits", "value": "24" },
+        { "label": "Revenue", "value": "+$140", "delta": "▲", "deltaKind": "up" },
+        { "label": "New signups", "value": "12", "delta": "+5", "deltaKind": "up" },
+        { "label": "Tests", "value": "318", "delta": "all green", "deltaKind": "up" }
+      ]
+    },
+    {
+      "type": "feed", "accent": "blue", "title": "🛠 Shipped",
+      "items": [
+        { "what": "feat: MCP connector layer — any MCP server is now a cockpit source", "sub": "+412 / −58 · the big one", "meta": "16:24" },
+        { "what": "feat: typed-card spec replaces hardcoded sections", "meta": "14:10" },
+        { "what": "fix: CSV export pagination over 10k rows", "sub": "closes ENG-412", "meta": "11:38" },
+        { "what": "chore: bump renderer to v2, migrate sample briefs", "meta": "10:02" }
+      ]
+    },
+    {
+      "type": "list", "accent": "amber", "title": "✍️ To post / queue",
+      "items": [
+        { "what": "MCP connectors demo — 40s screen recording", "sub": "Hook: «I described my dashboard in one sentence».", "chips": ["X", "leverage: media"], "tags": [{"label": "today", "kind": "today"}] },
+        { "what": "Weekly build log → newsletter", "sub": "Queue is ready, just needs an intro paragraph.", "chips": ["beehiiv"], "tags": [{"label": "this week", "kind": "med"}] }
+      ]
+    }
+  ]
+}

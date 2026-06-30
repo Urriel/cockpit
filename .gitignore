@@ -1,0 +1,10 @@
+# generated cockpit renders
+gallery/*.html
+*.brief.html
+
+# python
+__pycache__/
+*.pyc
+
+# os
+.DS_Store

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cockpit</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --bg:#0e1116; --card:#171a21; --card2:#1d212b; --border:#262c38; --border-soft:#20252f;
+    --text:#e6e8eb; --muted:#9aa3b2; --faint:#7e8794;
+    --radius:14px; --measure:64ch;
+    --s2:8px; --s3:12px; --s4:16px; --s5:20px; --s6:24px;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --z-sticky:10;
+  }
+  /* accent palette — any card may take any accent via .accent-<name> */
+  .accent-red    {--ac:#ff5d5d; --ac-ttl:#ff9a9a; --ac-soft:rgba(255,93,93,.12);  --ac-bd:rgba(255,93,93,.30)}
+  .accent-amber  {--ac:#ffb84d; --ac-ttl:#f2bd73; --ac-soft:rgba(255,184,77,.11); --ac-bd:rgba(255,184,77,.28)}
+  .accent-blue   {--ac:#5db4ff; --ac-ttl:#8fc4ff; --ac-soft:rgba(93,180,255,.11); --ac-bd:rgba(93,180,255,.28)}
+  .accent-violet {--ac:#b88bff; --ac-ttl:#c7abff; --ac-soft:rgba(184,139,255,.12);--ac-bd:rgba(184,139,255,.30)}
+  .accent-green  {--ac:#46d39a; --ac-ttl:#5fd4a4; --ac-soft:rgba(70,211,154,.11); --ac-bd:rgba(70,211,154,.28)}
+  .accent-gray   {--ac:#9aa3b2; --ac-ttl:#aab2c0; --ac-soft:rgba(154,163,178,.07);--ac-bd:var(--border)}
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; padding-bottom:48px;
+  }
+  ::selection{background:rgba(255,93,93,.26)}
+  .wrap{max-width:1020px; margin:0 auto; padding:0 16px}
+
+  header{
+    position:sticky; top:0; z-index:var(--z-sticky); background:rgba(14,17,22,.82);
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border); padding:14px 0 12px;
+  }
+  header .wrap{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:6px}
+  h1{font-size:18px; margin:0; letter-spacing:-.01em; font-weight:650}
+  h1 .dot{color:#ff5d5d; font-size:13px; vertical-align:1px}
+  .meta{color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums}
+  .sources{color:var(--faint); font-size:11.5px; margin-top:6px; width:100%}
+
+  .layout{margin-top:18px; display:flex; gap:16px; align-items:flex-start}
+  main{flex:1; min-width:0; display:flex; flex-direction:column; gap:14px}
+
+  /* ---- card shell ---- */
+  .card{background-color:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+    padding:var(--s4) var(--s5)}
+  .card.t-hero{background-image:linear-gradient(180deg, var(--ac-soft), transparent 46%); border-color:var(--ac-bd)}
+  .card.t-note{background-color:transparent; border-color:var(--border-soft); padding:var(--s3) var(--s5)}
+
+  .ctitle{display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:650;
+    text-transform:uppercase; letter-spacing:.7px; color:var(--ac-ttl); margin:0 0 var(--s3)}
+  .ctitle .badge{margin-left:auto; font-size:11px; font-weight:650; text-transform:none; letter-spacing:0;
+    color:var(--ac-ttl); background:var(--ac-soft); border:1px solid var(--ac-bd);
+    padding:2px 9px; border-radius:999px}
+
+  /* ---- hero ---- */
+  .t-hero .big{font-size:22px; font-weight:650; line-height:1.32; letter-spacing:-.012em;
+    margin:2px 0 var(--s3); max-width:52ch; text-wrap:balance}
+  .t-hero .sub{color:#d3d8e0; font-size:14.5px; line-height:1.55; max-width:var(--measure)}
+
+  /* ---- metric ---- */
+  .metrics{display:flex; flex-wrap:wrap; gap:14px 30px; margin-top:2px}
+  .metric{display:flex; flex-direction:column; gap:3px; min-width:80px}
+  .metric .val{font-size:20px; font-weight:650; letter-spacing:-.01em; line-height:1.1;
+    font-variant-numeric:tabular-nums}
+  .metric .delta{font-size:12px; font-weight:650; letter-spacing:0; margin-left:3px}
+  .delta.up{color:#5fd4a4} .delta.down{color:#ff9b9b} .delta.warn{color:#ffd08a} .delta.flat{color:var(--muted)}
+  .metric .lbl{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.4px}
+  .metric .msub{font-size:12px; color:var(--faint)}
+
+  /* ---- list ---- */
+  .item{padding:var(--s3) 0; border-top:1px solid var(--border)}
+  .item:first-of-type{border-top:0; padding-top:2px}
+  .item .line{max-width:var(--measure)}
+  .item .who{font-weight:650; color:var(--text)}
+  .item .what{color:var(--text)}
+  .sub{color:var(--muted); font-size:13.5px; line-height:1.5; margin-top:3px; max-width:var(--measure)}
+
+  /* ---- feed ---- */
+  .feeditem{display:flex; gap:12px; align-items:baseline; padding:8px 0; border-top:1px solid var(--border)}
+  .feeditem:first-child{border-top:0; padding-top:2px}
+  .feeditem .fmain{flex:1; min-width:0}
+  .feeditem .fwhat{color:var(--text)}
+  .feeditem .fsub{color:var(--muted); font-size:13px; margin-top:1px}
+  .feeditem .fmeta{flex:none; color:var(--faint); font-size:11.5px; white-space:nowrap;
+    font-variant-numeric:tabular-nums}
+
+  /* ---- chips + tags (shared) ---- */
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; align-items:center}
+  .chip{font-size:11px; color:var(--muted); background:var(--card2); border:1px solid var(--border);
+    padding:2px 9px; border-radius:999px; white-space:nowrap}
+  .chip.src{color:#cbd5e1}
+  .tag{font-size:10.5px; font-weight:700; letter-spacing:.4px; padding:2px 7px; border-radius:5px;
+    text-transform:uppercase; line-height:1.4}
+  .tag.high{color:#ff9b9b; background:rgba(255,93,93,.14)}
+  .tag.med{color:#ffd08a; background:rgba(255,184,77,.14)}
+  .tag.low{color:var(--muted); background:var(--card2); border:1px solid var(--border)}
+  .tag.late{color:#fff; background:#d23a36}
+  .tag.today{color:#08243b; background:#5db4ff; font-weight:800}
+
+  /* ---- note ---- */
+  details.note{margin:0}
+  details.note summary{cursor:pointer; color:var(--muted); font-size:13px; list-style:none;
+    padding:3px 0; border-radius:6px; transition:color .15s var(--ease)}
+  details.note summary:hover{color:var(--text)}
+  details.note summary:focus-visible{outline:2px solid #5db4ff; outline-offset:3px}
+  details.note summary::-webkit-details-marker{display:none}
+  details.note summary:before{content:"\25B8"; color:var(--faint); display:inline-block;
+    width:1em; margin-right:4px; transition:transform .18s var(--ease)}
+  details.note[open] summary:before{transform:rotate(90deg)}
+  .card.t-note .body{color:var(--faint); font-size:13px; line-height:1.55; margin-top:var(--s2); max-width:var(--measure)}
+  .card.t-note .body strong{color:var(--muted)}
+  .sec{color:#46d39a; font-weight:600}
+
+  /* ---- rail (aside) ---- */
+  .donerail{flex:none; width:236px; position:sticky; top:84px; background:var(--card);
+    border:1px solid var(--border); border-radius:var(--radius); padding:var(--s3) var(--s4)}
+  .donerail h2{margin:0 0 var(--s3); font-size:12px; font-weight:650; text-transform:uppercase;
+    letter-spacing:.7px; color:#5fd4a4; display:flex; align-items:center; gap:6px}
+  .donerail h2 .n{margin-left:auto; color:var(--faint); font-weight:700}
+  .donelist{list-style:none; margin:0; padding:0}
+  .donelist li{font-size:12.5px; color:var(--muted); line-height:1.4; padding:7px 0 7px 20px;
+    border-top:1px solid var(--border); position:relative}
+  .donelist li:first-child{border-top:0}
+  .donelist li:before{content:"\2713"; position:absolute; left:0; top:7px; color:#46d39a; font-weight:700}
+
+  footer{color:var(--faint); font-size:12px; margin-top:var(--s6); border-top:1px solid var(--border);
+    padding-top:var(--s4); max-width:var(--measure); line-height:1.5}
+  a{color:#7cc0ff; text-decoration:none; border-bottom:1px solid rgba(124,192,255,.3);
+    transition:color .15s var(--ease), border-color .15s var(--ease)}
+  a:hover{color:#a7d4ff; border-color:rgba(124,192,255,.6)}
+  a:focus-visible{outline:2px solid #5db4ff; outline-offset:2px; border-radius:2px}
+
+  @keyframes rise{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+  main, .donerail{animation:rise .42s var(--ease) both}
+  .donerail{animation-delay:.04s}
+
+  @media (max-width:720px){
+    .layout{flex-direction:column}
+    .donerail{width:auto; position:static; order:-1}
+    .t-hero .big{font-size:20px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important; transition:none !important}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1><span class="dot">&#9679;</span> Cockpit</h1>
+    <span class="meta" id="meta"></span>
+    <div class="sources" id="sources"></div>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="layout">
+  <main id="main"></main>
+  <aside class="donerail" id="rail">
+    <h2><span id="rail-title">&#9989; Done today</span> <span class="n" id="rail-n"></span></h2>
+    <ul class="donelist" id="rail-list"></ul>
+  </aside>
+</div>
+<footer id="footer"></footer>
+</div>
+
+<!--
+=========================================================================
+COCKPIT DATA — this is the ONLY block to rewrite each run. Everything above
+(CSS + the renderer below) is frozen template: copy it verbatim, never touch it.
+
+A cockpit is an ORDERED ARRAY OF TYPED CARDS plus an optional rail.
+  date, time, sources, footer : strings (footer/sub/headline/what may contain inline HTML)
+  cards : [ Card ]          // rendered top→bottom in the main column
+  rail  : [ str ]           // right aside; omit / [] → no rail, main goes full width
+  railTitle? : str          // heading for the rail (default "✅ Done today")
+
+  Card = one of (discriminated by .type); every card takes an optional
+         accent ∈ red | amber | blue | violet | green | gray  (default gray):
+    hero   { type, accent?, title, badge?, headline, sub?, chips?:[str] }
+    metric { type, accent?, title, badge?, items:[{ label, value, delta?, deltaKind?, sub? }] }
+    list   { type, accent?, title, badge?, items:[{ who?, what, sub?, chips?:[str], tags?:[{label,kind}] }] }
+    feed   { type, accent?, title, badge?, items:[{ what, sub?, meta? }] }
+    note   { type, accent?, summary, bodyHtml, collapsed?, open?, footnote? }
+
+  deltaKind ∈ up | down | warn | flat   (author picks meaning; up=green, down=red, warn=amber)
+  tag.kind  ∈ late | today | high | med | low
+=========================================================================
+-->
+<script type="application/json" id="cockpit-data">
+{
+  "date": "{{DATE}}",
+  "time": "{{TIME}}",
+  "sources": "{{SOURCES}}",
+  "footer": "Read-only ops brief — polling, not realtime.",
+  "cards": [],
+  "rail": []
+}
+</script>
+
+<script>
+/* ---- renderer (frozen) ---- */
+(function(){
+  var D = JSON.parse(document.getElementById('cockpit-data').textContent);
+  var el = function(tag, cls, html){ var n=document.createElement(tag); if(cls)n.className=cls; if(html!=null)n.innerHTML=html; return n; };
+
+  function chipRow(chips, tags, srcClass){
+    if(!(chips&&chips.length) && !(tags&&tags.length)) return null;
+    var d = el('div','chips');
+    (chips||[]).forEach(function(c){ d.appendChild(el('span', srcClass?'chip src':'chip', c)); });
+    (tags||[]).forEach(function(t){ d.appendChild(el('span','tag '+(t.kind||'low'), t.label)); });
+    return d;
+  }
+  function shell(c){ return el('section','card t-'+(c.type||'list')+' accent-'+(c.accent||'gray')); }
+  function ctitle(s, c){
+    if(c.title==null && !c.badge) return;
+    var t = el('div','ctitle', c.title||'');
+    if(c.badge) t.appendChild(el('span','badge', c.badge));
+    s.appendChild(t);
+  }
+
+  var R = {
+    hero: function(c){
+      var s=shell(c); ctitle(s,c);
+      if(c.headline) s.appendChild(el('div','big', c.headline));
+      if(c.sub) s.appendChild(el('div','sub', c.sub));
+      var ch=chipRow(c.chips,null,true); if(ch) s.appendChild(ch);
+      return s;
+    },
+    metric: function(c){
+      var s=shell(c); ctitle(s,c);
+      var g=el('div','metrics');
+      (c.items||[]).forEach(function(m){
+        var col=el('div','metric');
+        var v=el('div','val', m.value!=null? String(m.value):'');
+        if(m.delta) v.appendChild(el('span','delta '+(m.deltaKind||'flat'), m.delta));
+        col.appendChild(v);
+        if(m.label) col.appendChild(el('div','lbl', m.label));
+        if(m.sub) col.appendChild(el('div','msub', m.sub));
+        g.appendChild(col);
+      });
+      s.appendChild(g);
+      return s;
+    },
+    list: function(c){
+      var s=shell(c); ctitle(s,c);
+      (c.items||[]).forEach(function(it){
+        var d=el('div','item');
+        var head=(it.who? '<span class="who">'+it.who+'</span> — ':'') + '<span class="what">'+(it.what||'')+'</span>';
+        d.appendChild(el('div','line', head));
+        if(it.sub) d.appendChild(el('div','sub', it.sub));
+        var ch=chipRow(it.chips, it.tags); if(ch) d.appendChild(ch);
+        s.appendChild(d);
+      });
+      return s;
+    },
+    feed: function(c){
+      var s=shell(c); ctitle(s,c);
+      (c.items||[]).forEach(function(it){
+        var d=el('div','feeditem');
+        var m=el('div','fmain');
+        m.appendChild(el('div','fwhat', it.what||''));
+        if(it.sub) m.appendChild(el('div','fsub', it.sub));
+        d.appendChild(m);
+        if(it.meta) d.appendChild(el('div','fmeta', it.meta));
+        s.appendChild(d);
+      });
+      return s;
+    },
+    note: function(c){
+      var s=shell(c);
+      var det=el('details','note'); if(c.open) det.open=true; else if(c.collapsed===false) det.open=true;
+      det.appendChild(el('summary', null, c.summary||c.title||'Filtered'));
+      var body=el('div','body', c.bodyHtml||'');
+      if(c.footnote){ body.appendChild(document.createElement('br')); body.appendChild(document.createElement('br'));
+        body.appendChild(el('span','sec','⚠️ ')); body.appendChild(document.createTextNode(c.footnote)); }
+      det.appendChild(body); s.appendChild(det);
+      return s;
+    }
+  };
+
+  document.getElementById('meta').textContent = D.date + ' · generated ' + D.time;
+  document.getElementById('sources').textContent = 'Sources: ' + D.sources;
+  document.getElementById('footer').innerHTML = D.footer||'';
+
+  var main = document.getElementById('main');
+  (D.cards||[]).forEach(function(c){ var f=R[c.type]; if(f) main.appendChild(f(c)); });
+
+  var rail = document.getElementById('rail');
+  if(D.rail && D.rail.length){
+    document.getElementById('rail-title').innerHTML = D.railTitle || '✅ Done today';
+    document.getElementById('rail-n').textContent = D.rail.length;
+    var rl = document.getElementById('rail-list');
+    D.rail.forEach(function(s){ rl.appendChild(el('li', null, s)); });
+  } else {
+    rail.parentNode.removeChild(rail); // no rail → main fills width
+  }
+})();
+</script>
+</body>
+</html>
